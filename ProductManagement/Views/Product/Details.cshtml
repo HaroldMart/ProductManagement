@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Detalles de producto";
+}
+@model ProductManagement.Core.Application.ViewModels.ProductViewModel
+
+<div class="product-details">
+    <div class="d-flex justify-content-between flex-wrap">
+        <h3 class="display-6">Detalles</h3>
+        <div class="buttons">
+            <a asp-route-id="@Model.Id" type="button" asp-action="Edit" class="btn btn-success text-white" style="height: 40px;">Editar</a>
+            <a asp-route-id="@Model.Id" type="button" asp-action="Delete" class="btn btn-danger text-white" style="height: 40px;">Eliminar</a>
+        </div>
+    </div>
+
+
+    <div class="products-container d-flex gap-5 flex-wrap mt-4">
+        <div class="info d-flex flex-column">
+            <h2>@Model.Name</h2>
+            <p class="mt-5"><b>Descripcion: </b>@Model.Description</p>
+            <p><b>Precio: </b>@Model.Price</p>
+            <p><b>Cantidad: </b>@Model.Amount</p>
+            <p><b>Categoria: </b>@Model.Category.Name</p>
+        </div>
+        
+    </div>
+</div>
+
+<style>
+    .product-details {
+        font-size: 18px;
+    }
+
+    .product-details .products-container .image {
+        width: 700px;
+    }
+
+    .product-details .products-container .image img{
+        width: 100%;
+            border-radius: 10px;
+    }
+</style>

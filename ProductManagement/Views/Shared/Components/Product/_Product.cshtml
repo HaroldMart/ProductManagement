@@ -1,0 +1,24 @@
+﻿@model ProductManagement.Core.Application.ViewModels.ProductViewModel;
+
+<div class="card card-product" style="width: 18rem;border-radius:10px;">
+        <div class="card-body">
+        <a asp-action="Details" asp-controller="Product" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
+            <p class="card-text">@Model.Description</p>
+            <p class="card-text">$@Model.Price pesos</p>
+            <b class="card-text">@Model.Amount Unidades</b>
+        </div>
+</div>
+
+<style>
+    .card-product {
+        transition: all 300ms;
+       
+    }
+    .card-product a {
+        text-decoration: none;
+        
+    }
+     .card-product:hover {
+        transform: scale(0.98);
+     }
+</style> 

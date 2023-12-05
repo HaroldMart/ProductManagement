@@ -1,0 +1,41 @@
+﻿@model ProductManagement.Core.Application.ViewModels.SaveProductViewModel
+
+@{
+    bool isEdit = false;
+
+    if(Model != null)
+    {
+        if (Model.Id != 0) isEdit = true;   
+    }
+}
+
+<div class="">
+    <h3>@(isEdit? "Editando producto" : "Agregando producto")</h3>
+</div>
+
+<form method="post" asp-controller="Product" asp-action=@(isEdit? "Edit" : "SaveProduct" ) enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label" for="name">Nombre del producto</label>
+        <input asp-for="Name" type="text" class="form-control" name="name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <label class="form-label" for="description">Descripcion</label>
+        <input asp-for="Description" type="text" class="form-control" name="description">
+
+        <label class="form-label" for="price">Precio</label>
+        <input asp-for="Price" type="number" class="form-control" name="price">
+
+        <label class="form-label" for="amount">Cantidad de producto</label>
+        <input asp-for="Amount" type="number" class="form-control" name="amount">
+
+        <label class="form-label" for="category">Categoria</label>
+        <select asp-for="CategoryId" class="form-select" name="categoryId">
+            @foreach(var category in ViewBag.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
