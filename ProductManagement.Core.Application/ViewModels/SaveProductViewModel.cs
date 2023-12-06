@@ -1,4 +1,6 @@
-﻿namespace ProductManagement.Core.Application.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProductManagement.Core.Application.ViewModels
 {
     public class SaveProductViewModel
     {
