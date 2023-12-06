@@ -1,43 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.ViewModels;
+using ProductManagement.Core.Application.ViewModels.Product;
 
 namespace ProductManagement.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly IProductService _service;
+        private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         public ProductController(IProductService service, ICategoryService categoryService)
         {
-            _service = service;
+            _productService = service;
             _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _service.GetAll());
+            return View(await _productService.GetAllViewModel());
         }
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View(_service.Get(id));
+            return View(await _productService.GetViewModel(id));
         }
         public async Task<IActionResult> Save()
         {
-            var data = await _categoryService.GetAll();
+            var data = await _categoryService.GetAllViewModel();
             ViewBag.Categories = data;
             return View();
         }
 
         [HttpPost]
-        public IActionResult SaveProduct(SaveProductViewModel product)
+        public async Task<IActionResult> SaveProduct(SaveProductViewModel product)
         {
             if(ModelState.IsValid) {
                 try
                 {
-                    var response = _service.Save(product);
+                    var response = await _productService.Add(product);
 
-                    if (response == true)
+                    if (response == "Inserted")
                     {
                         return RedirectToAction("Index");
                     }
@@ -52,7 +52,7 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Edit(int id)
         {
-            var data = _service.Get(id);
+            var data = await _productService.GetViewModel(id);
             SaveProductViewModel product = new()
             {
                 Id = data.Id,
@@ -60,7 +60,7 @@ namespace ProductManagement.Controllers
                 Description = data.Description,
                 Price = data.Price,
                 Amount = data.Amount,
-                CategoryId = data.Category.Id,
+                CategoryId 
             };
 
             var category = await _categoryService.GetAll();
@@ -70,13 +70,13 @@ namespace ProductManagement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(SaveProductViewModel product)
+        public ActionResult Edit(SaveCategoryViewModel product)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var response = _service.Update(product);
+                    var response = _productService.Update(product);
 
                     if (response == true)
                     {

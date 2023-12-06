@@ -15,10 +15,4 @@
     <ProjectReference Include="..\ProductManagement.Core.Domain\ProductManagement.Core.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\Category\" />
-    <Folder Include="ViewModels\Business\" />
-    <Folder Include="ViewModels\Product\" />
-  </ItemGroup>
-
 </Project>

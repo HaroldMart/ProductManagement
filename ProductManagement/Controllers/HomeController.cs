@@ -17,9 +17,9 @@ namespace ProductManagement.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var products = await _productService.GetAll();
-            var categories = await _categoryService.GetAll();
-            var business = await _businessService.GetAll();
+            var products = await _productService.GetAllViewModel();
+            var categories = await _categoryService.GetAllViewModel();
+            var business = await _businessService.GetAllViewModel();
             ViewBag.categoriesCount = categories.Count;
             ViewBag.productsCount = products.Count;
             ViewBag.businessCount = business.Count;

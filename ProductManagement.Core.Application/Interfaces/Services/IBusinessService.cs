@@ -1,13 +1,7 @@
-﻿using ProductManagement.Core.Application.ViewModels;
+﻿using ProductManagement.Core.Application.Interfaces.Services;
+using ProductManagement.Core.Application.ViewModels.Business;
 
 namespace ProductManagement.Core.Application.Interfaces.Service
 {
-    public interface IBusinessService
-    {
-        Task<ICollection<BusinessViewModel>> GetAll();
-        BusinessViewModel Get(int id);
-        bool Save(BusinessViewModel entity);
-        bool Update(BusinessViewModel entity);
-        Task<bool> Delete(int id);
-    }
+    public interface IBusinessService : IGenericService<SaveBusinessViewModel, BusinessViewModel> { }
 }

@@ -1,7 +1,8 @@
 ﻿using ProductManagement.Core.Application.Interfaces.Repository;
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Domain.Entities;
-using ProductManagement.Core.Application.ViewModels;
+using ProductManagement.Core.Application.ViewModels.Product;
+using ProductManagement.Core.Application.ViewModels.Category;
 
 namespace ProductManagement.Core.Application.Services
 {
@@ -13,11 +14,11 @@ namespace ProductManagement.Core.Application.Services
             _repository = repository;
         }
 
-        public async Task<ICollection<ProductViewModel>> GetAll()
+        public async Task<ICollection<ProductViewModel>> GetAllViewModel()
         {
-            List<ProductViewModel> list = new();
+            List<ProductViewModel> list = [];
 
-            var data = await _repository.GetAll();
+            var data = await _repository.GetAllAsync();
 
             foreach (var item in data)
             {
@@ -25,76 +26,112 @@ namespace ProductManagement.Core.Application.Services
                 {
                     Id = item.Id,
                     Name = item.Name,
+                    Amount = item.Amount,
                     Description = item.Description,
                     Price = item.Price,
-                    Amount = item.Amount,
-                    Category = item.Category
+                    CategoryName = item.Category.Name
                 };
 
-                  list.Add(product);
-                }
+                list.Add(product);
+            }
 
             return list;
         }
-        public ProductViewModel Get(int id)
+        public async Task<ICollection<ProductViewModel>> GetAllViewModelWithInclude(string[] properties)
         {
-            var data = _repository.Get(id);
-            ProductViewModel product = new();
+            List<ProductViewModel> list = [];
+
+            var data = await _repository.GetAllWithIncludeAsync(properties);
+
+            foreach (var item in data)
+            {
+                ProductViewModel product = new()
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Amount = item.Amount,
+                    Description = item.Description,
+                    Price = item.Price,
+                    CategoryName = item.Category.Name
+                };
+
+                list.Add(product);
+            }
+
+            return list;
+        }
+        public async Task<ProductViewModel?> GetViewModel(int id)
+        {
+            var data = await _repository.GetAsync(id);
+
             if (data != null)
             {
-                product.Id = data.Id;
-                product.Name = data.Name;
-                product.Description = data.Description;
-                product.Price = data.Price;
-                product.Amount = data.Amount;
-                product.Category = data.Category;
+                ProductViewModel product = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Amount = data.Amount,
+                    Description = data.Description,
+                    Price = data.Price,
+                    CategoryName = data.Category.Name
+                };
+
+                return product;
             }
-            return product;
+
+            return null;
         }
-        public bool Save(SaveProductViewModel productObj)
+        public async Task<string> Add(SaveProductViewModel saveViewModel)
         {
             Product product = new()
             {
-                Id = productObj.Id,
-                Name = productObj.Name,
-                Description = productObj.Description,
-                Price = productObj.Price,
-                Amount = productObj.Amount,
-                CategoryId = productObj.CategoryId
+                Id = saveViewModel.Id,
+                Name = saveViewModel.Name,
+                Amount = saveViewModel.Amount,
+                Description = saveViewModel.Description,
+                Price = saveViewModel.Price,
+                CategoryId = saveViewModel.CategoryId,
             };
 
-            var data = _repository.Save(product);
+            var data = await _repository.AddAsync(product);
 
-            if(data != null)
+            if (data != null)
             {
-                return true;
+                return "Inserted";
             }
 
-            return false;
+            return "Failed";
         }
-        public bool Update(SaveProductViewModel productObj)
+        public async Task<string> Update(SaveProductViewModel saveViewModel)
         {
+
             Product product = new()
             {
-                Id = productObj.Id,
-                Name = productObj.Name,
-                Description = productObj.Description,
-                Price = productObj.Price,
-                Amount = productObj.Amount,
-                CategoryId = productObj.CategoryId
+                Id = saveViewModel.Id,
+                Name = saveViewModel.Name,
+                Amount = saveViewModel.Amount,
+                Description = saveViewModel.Description,
+                Price = saveViewModel.Price,
+                CategoryId = saveViewModel.CategoryId,
             };
 
-            _repository.Update(product);
-            return true;
-        }
-        public async Task<bool> Delete(int id)
-        {
-            var data =  await _repository.Delete(id);
-            if(data)
+            bool response = await _repository.UpdateAsync(product);
+            if (response)
             {
-                return true;
+                return "Updated";
             }
-            return false;
+
+            return "Failed";
+        }
+        public async Task<string> Delete(int id)
+        {
+            var data = await _repository.DeleteAsync(id);
+
+            if (data)
+            {
+                return "Deleted";
+            }
+            return "Failed";
         }
     }
 }

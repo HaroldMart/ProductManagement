@@ -1,11 +1,13 @@
 ﻿using ProductManagement.Core.Application.Interfaces.Repository;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.ViewModels;
+using ProductManagement.Core.Application.ViewModels.Business;
+using ProductManagement.Core.Application.ViewModels.Category;
+using ProductManagement.Core.Application.ViewModels.Product;
 using ProductManagement.Core.Domain.Entities;
 
 namespace ProductManagement.Core.Application.Services
 {
-    public class CategoryService :ICategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repository;
         public CategoryService(ICategoryRepository repository)
@@ -13,11 +15,11 @@ namespace ProductManagement.Core.Application.Services
             _repository = repository;
         }
 
-        public async Task<ICollection<CategoryViewModel>> GetAll()
+        public async Task<ICollection<CategoryViewModel>> GetAllViewModel()
         {
-            List<CategoryViewModel> list = new();
+            List<CategoryViewModel> list = [];
 
-            var data = await _repository.GetAll();
+            var data = await _repository.GetAllAsync();
 
             foreach (var item in data)
             {
@@ -25,7 +27,8 @@ namespace ProductManagement.Core.Application.Services
                 {
                     Id = item.Id,
                     Name = item.Name,
-                    Products = item.Products
+                    Image = item.Image,
+                    ProductsCount = item.Products.Count
                 };
 
                 list.Add(category);
@@ -33,58 +36,93 @@ namespace ProductManagement.Core.Application.Services
 
             return list;
         }
-        public CategoryViewModel Get(int id)
+        public async Task<ICollection<CategoryViewModel>> GetAllViewModelWithInclude(string[] properties)
         {
-            var data = _repository.Get(id);
-            CategoryViewModel category = new();
+            List<CategoryViewModel> list = [];
+
+            var data = await _repository.GetAllWithIncludeAsync(properties);
+
+            foreach (var item in data)
+            {
+                CategoryViewModel category = new()
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Image = item.Image,
+                    ProductsCount = item.Products.Count
+                };
+
+                list.Add(category);
+            }
+
+            return list;
+        }
+        public async Task<CategoryViewModel?> GetViewModel(int id)
+        {
+            var data = await _repository.GetAsync(id);
 
             if (data != null)
             {
-                category.Id = data.Id;
-                category.Name = data.Name;
-                category.Products = data.Products;
+                CategoryViewModel category = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Image = data.Image,
+                    ProductsCount = data.Products.Count
+                };
+
+                return category;
             }
-            return category;
+
+            return null;
         }
-        public bool Save(CategoryViewModel categoryObj)
+        public async Task<string> Add(SaveCategoryViewModel saveViewModel)
         {
             Category category = new()
             {
-                Id = categoryObj.Id,
-                Name = categoryObj.Name,
-                Products = categoryObj.Products
+                Id = saveViewModel.Id,
+                Name = saveViewModel.Name,
+                Image = saveViewModel.Image,
+                BusinessId = saveViewModel.BusinessId
             };
 
-            var data = _repository.Save(category);
+            var data = await _repository.AddAsync(category);
 
             if (data != null)
             {
-                return true;
+                return "Inserted";
             }
 
-            return false;
+            return "Failed";
         }
-        public bool Update(CategoryViewModel categoryObj)
+        public async Task<string> Update(SaveCategoryViewModel saveViewModel)
         {
+
             Category category = new()
             {
-                Id = categoryObj.Id,
-                Name = categoryObj.Name,
-                Products = categoryObj.Products
+                Id = saveViewModel.Id,
+                Name = saveViewModel.Name,
+                Image = saveViewModel.Image,
+                BusinessId = saveViewModel.BusinessId
             };
 
-            _repository.Update(category);
-            return true;
+            bool response = await _repository.UpdateAsync(category);
+            if (response)
+            {
+                return "Updated";
+            }
+
+            return "Failed";
         }
-        public async Task<bool> Delete(int id)
+        public async Task<string> Delete(int id)
         {
-            var data = await _repository.Delete(id);
+            var data = await _repository.DeleteAsync(id);
 
             if (data)
             {
-                return true;
+                return "Deleted";
             }
-            return false;
+            return "Failed";
         }
     }
 }
