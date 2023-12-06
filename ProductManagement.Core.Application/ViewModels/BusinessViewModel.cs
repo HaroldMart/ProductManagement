@@ -11,6 +11,7 @@ namespace ProductManagement.Core.Application.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Category> Categories { get; set; }
+        public string? Image { get; set; }
+        public ICollection<Category>? Categories { get; set; }
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement", "ProductManagement\ProductManagement.csproj", "{ABAF06A7-4B64-4771-810D-5CE787F2B6ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.ProductManagement", "ProductManagement\WebApp.ProductManagement.csproj", "{ABAF06A7-4B64-4771-810D-5CE787F2B6ED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{336FE822-AAC7-46A0-81C3-EF20359CDB18}"
 EndProject
@@ -15,11 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApp", "WebApp", "{27045157-220C-4725-929B-6328B6F906F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Core.Domain", "ProductManagement.Core.Domain\ProductManagement.Core.Domain.csproj", "{7C2F9652-20FC-4882-A837-3F6616BBCFE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Core.Domain", "ProductManagement.Core.Domain\ProductManagement.Core.Domain.csproj", "{7C2F9652-20FC-4882-A837-3F6616BBCFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Core.Application", "ProductManagement.Core.Application\ProductManagement.Core.Application.csproj", "{950E9E18-D237-40FB-988D-5159E3D6F783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Core.Application", "ProductManagement.Core.Application\ProductManagement.Core.Application.csproj", "{950E9E18-D237-40FB-988D-5159E3D6F783}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Infrastructure.Persistence", "ProductManagement.Infrastructure.Persistence\ProductManagement.Infrastructure.Persistence.csproj", "{2B1A8E77-2EB5-42B0-9DF5-DC0F0B721FBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Infrastructure.Persistence", "ProductManagement.Infrastructure.Persistence\ProductManagement.Infrastructure.Persistence.csproj", "{2B1A8E77-2EB5-42B0-9DF5-DC0F0B721FBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
