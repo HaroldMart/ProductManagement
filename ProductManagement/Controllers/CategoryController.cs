@@ -1,47 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.ViewModels.Product;
-using ProductManagement.Core.Domain.Entities;
+using ProductManagement.Core.Application.ViewModels.Category;
 
 namespace ProductManagement.Controllers
 {
-    public class ProductController : Controller
+    public class CategoryController : Controller
     {
-        private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        public ProductController(IProductService productService, ICategoryService categoryService)
+        private readonly IBusinessService _businessService;
+        public CategoryController(ICategoryService categoryService, IBusinessService businessService)
         {
-            _productService = productService;
             _categoryService = categoryService;
+            _businessService = businessService;
         }
         public async Task<IActionResult> Index()
         {
-           /* if (products.Count > 10)
-            {
-
-                return View(products.TakeLast(10).ToList());
-            }
-           */
-            return View(await _productService.GetAllViewModel());
+            return View(await _categoryService.GetAllViewModel());
         }
         public async Task<IActionResult> Details(int id)
         {
-            return View(await _productService.GetViewModelWithInclude(id, collections: [], references: ["Category"]));
+            return View(await _categoryService.GetViewModelWithInclude(id, collections: ["Products"], references: ["Business"]));
         }
         public async Task<IActionResult> Save()
         {
-            var data = await _categoryService.GetAllViewModel();
-            ViewBag.Categories = data;
+            var data = await _businessService.GetAllViewModel();
+            ViewBag.Business = data;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveProduct(SaveProductViewModel product)
+        public async Task<IActionResult> SaveCategory(SaveCategoryViewModel category)
         {
-            if(ModelState.IsValid) {
+            if (ModelState.IsValid)
+            {
                 try
                 {
-                    var response = await _productService.Add(product);
+                    var response = await _categoryService.Add(category);
 
                     if (response == "Inserted")
                     {
@@ -53,36 +47,34 @@ namespace ProductManagement.Controllers
                     Console.WriteLine(ex.Message);
                 }
             }
-           
+
             return RedirectToAction("Save");
         }
         public async Task<ActionResult> Edit(int id)
         {
-            var data = await _productService.GetSaveViewModel(id);
-            SaveProductViewModel product = new()
+            var data = await _categoryService.GetSaveViewModel(id);
+            SaveCategoryViewModel category = new()
             {
                 Id = data.Id,
                 Name = data.Name,
-                Description = data.Description,
-                Price = data.Price,
-                Amount = data.Amount,
-                CategoryId = data.CategoryId,
+                Image = data.Image,
+                BusinessId = data.BusinessId
             };
 
-            var category = await _categoryService.GetAllViewModel();
-            ViewBag.Categories = category;
+            var business = await _businessService.GetAllViewModel();
+            ViewBag.Business = business;
 
-            return View("Save", product);
+            return View("Save", category);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(SaveProductViewModel product)
+        public async Task<ActionResult> Edit(SaveCategoryViewModel category)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var response = await _productService.Update(product);
+                    var response = await _categoryService.Update(category);
 
                     if (response == "Updated")
                     {
@@ -99,14 +91,14 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Delete(int id)
         {
-            return View(await _productService.GetViewModel(id));
+            return View(await _categoryService.GetViewModel(id));
         }
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)
         {
-            string response = await _productService.Delete(id);
+            string response = await _categoryService.Delete(id);
 
-            if(response == "Deleted")
+            if (response == "Deleted")
             {
                 return RedirectToAction("Index");
             }

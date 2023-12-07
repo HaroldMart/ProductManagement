@@ -1,0 +1,23 @@
+﻿@model ProductManagement.Core.Application.ViewModels.Business.BusinessViewModel;
+
+<div class="card card-product" style="width: 18rem;border-radius:10px;">
+    <img src=@Model.Image class="card-img-top" alt="">
+        <div class="card-body">
+        <a asp-controller="Business" asp-action="Details" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
+            <p class="card-text">@Model.CategoriesCount</p>
+        </div>
+</div>
+
+<style>
+    .card-product {
+        transition: all 300ms;
+       
+    }
+    .card-product a {
+        text-decoration: none;
+        
+    }
+     .card-product:hover {
+        transform: scale(0.98);
+     }
+</style> 
