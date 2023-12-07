@@ -1,12 +1,5 @@
 using ProductManagement.Infrastructure.Persistence;
 using ProductManagement.Core.Application;
-using ProductManagement.Core.Application.Interfaces.Repository;
-using ProductManagement.Infrastructure.Persistence.Contexts;
-using ProductManagement.Infrastructure.Persistence.Repositories;
-using System.Configuration;
-using Microsoft.EntityFrameworkCore;
-using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

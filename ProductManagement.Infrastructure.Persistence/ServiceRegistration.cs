@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductManagement.Core.Application.Interfaces.Repositories.Generics;
 using ProductManagement.Core.Application.Interfaces.Repository;
 using ProductManagement.Infrastructure.Persistence.Contexts;
 using ProductManagement.Infrastructure.Persistence.Repositories;
+using ProductManagement.Infrastructure.Persistence.Repositories.Generics;
 
 namespace ProductManagement.Infrastructure.Persistence
 {
@@ -30,6 +32,8 @@ namespace ProductManagement.Infrastructure.Persistence
 
             #region Repositories
 
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient(typeof(IAditionalMethodsRepository<>), typeof(AditionalMethods<>));
             services.AddTransient<IBusinessRepository, BusinessRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();

@@ -1,41 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.ViewModels.Category;
+using ProductManagement.Core.Application.ViewModels.Business;
 
 namespace ProductManagement.Controllers
 {
-    public class CategoryController : Controller
+    public class BusinessController : Controller
     {
-        private readonly ICategoryService _categoryService;
         private readonly IBusinessService _businessService;
-        public CategoryController(ICategoryService categoryService, IBusinessService businessService)
+        public BusinessController(IBusinessService businessService)
         {
-            _categoryService = categoryService;
             _businessService = businessService;
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _categoryService.GetAllViewModel());
+            return View(await _businessService.GetAllViewModel());
         }
         public async Task<IActionResult> Details(int id)
         {
-            return View(await _categoryService.GetViewModelWithInclude(id, collections: ["Products"], references: ["Business"]));
+            return View(await _businessService.GetViewModelWithInclude(id, collections: ["Categories"], references: []));
         }
-        public async Task<IActionResult> Save()
+        public IActionResult Save()
         {
-            var data = await _businessService.GetAllViewModel();
-            ViewBag.Business = data;
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> SaveCategory(SaveCategoryViewModel category)
+        public async Task<IActionResult> SaveBusiness(SaveBusinessViewModel business)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var response = await _categoryService.Add(category);
+                    var response = await _businessService.Add(business);
 
                     if (response == "Inserted")
                     {
@@ -52,29 +47,25 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Edit(int id)
         {
-            var data = await _categoryService.GetSaveViewModel(id);
-            SaveCategoryViewModel category = new()
+            var data = await _businessService.GetSaveViewModel(id);
+            SaveBusinessViewModel business = new()
             {
                 Id = data.Id,
                 Name = data.Name,
                 Image = data.Image,
-                BusinessId = data.BusinessId
+                IdUser = data.IdUser
             };
 
-            var business = await _businessService.GetAllViewModel();
-            ViewBag.Business = business;
-
-            return View("Save", category);
+            return View("Save", business);
         }
-
         [HttpPost]
-        public async Task<ActionResult> Edit(SaveCategoryViewModel category)
+        public async Task<ActionResult> Edit(SaveBusinessViewModel business)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var response = await _categoryService.Update(category);
+                    var response = await _businessService.Update(business);
 
                     if (response == "Updated")
                     {
@@ -91,12 +82,12 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Delete(int id)
         {
-            return View(await _categoryService.GetViewModel(id));
+            return View(await _businessService.GetViewModel(id));
         }
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)
         {
-            string response = await _categoryService.Delete(id);
+            string response = await _businessService.Delete(id);
 
             if (response == "Deleted")
             {

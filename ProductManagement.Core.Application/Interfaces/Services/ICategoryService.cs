@@ -1,13 +1,9 @@
-﻿using ProductManagement.Core.Application.ViewModels;
+﻿using ProductManagement.Core.Application.Interfaces.Services.Generics;
+using ProductManagement.Core.Application.ViewModels.Business;
+using ProductManagement.Core.Application.ViewModels.Category;
+using ProductManagement.Core.Application.ViewModels.Product;
 
 namespace ProductManagement.Core.Application.Interfaces.Service
 {
-    public interface ICategoryService
-    {
-        Task<ICollection<CategoryViewModel>> GetAll();
-        CategoryViewModel Get(int id);
-        bool Save(CategoryViewModel entity);
-        bool Update(CategoryViewModel entity);
-        Task<bool> Delete(int id);
-    }
+    public interface ICategoryService : IAditionalMethodsService<SaveCategoryViewModel, CategoryViewModel> { }
 }
