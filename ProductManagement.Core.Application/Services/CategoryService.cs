@@ -1,8 +1,6 @@
 ﻿using ProductManagement.Core.Application.Interfaces.Repository;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.ViewModels.Business;
 using ProductManagement.Core.Application.ViewModels.Category;
-using ProductManagement.Core.Application.ViewModels.Product;
 using ProductManagement.Core.Domain.Entities;
 
 namespace ProductManagement.Core.Application.Services
@@ -28,7 +26,6 @@ namespace ProductManagement.Core.Application.Services
                     Id = item.Id,
                     Name = item.Name,
                     Image = item.Image,
-                    ProductsCount = item.Products.Count
                 };
 
                 list.Add(category);
@@ -69,6 +66,44 @@ namespace ProductManagement.Core.Application.Services
                     Name = data.Name,
                     Image = data.Image,
                     ProductsCount = data.Products.Count
+                };
+
+                return category;
+            }
+
+            return null;
+        }
+        public async Task<CategoryViewModel?> GetViewModelWithInclude(int id, string[] collections, string[] references)
+        {
+            var data = await _repository.GetWithIncludeAsync(id, collections: collections, references: references);
+
+            if (data != null)
+            {
+                CategoryViewModel category = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Image = data.Image,
+                    ProductsCount = data.Products.Count
+                };
+
+                return category;
+            }
+
+            return null;
+        }
+        public async Task<SaveCategoryViewModel?> GetSaveViewModel(int id)
+        {
+            var data = await _repository.GetAsync(id);
+
+            if (data != null)
+            {
+                SaveCategoryViewModel category = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Image = data.Image,
+                    BusinessId = data.BusinessId,
                 };
 
                 return category;

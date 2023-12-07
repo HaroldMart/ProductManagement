@@ -1,11 +1,12 @@
-﻿@model ProductViewModel;
+﻿@model ProductManagement.Core.Application.ViewModels.Product.ProductViewModel;
 
 <div class="card card-product" style="width: 18rem;border-radius:10px;">
         <div class="card-body">
-        <a asp-action="Details" asp-controller="Product" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
+        <a asp-controller="Product" asp-action="Details" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
             <p class="card-text">@Model.Description</p>
             <p class="card-text">$@Model.Price pesos</p>
             <b class="card-text">@Model.Amount Unidades</b>
+            <b class="card-text">@Model.CategoryName</b>
         </div>
 </div>
 

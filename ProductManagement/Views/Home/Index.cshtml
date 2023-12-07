@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home";
 }
-@model List<ProductViewModel>;
+@model List<ProductManagement.Core.Application.ViewModels.Business.BusinessViewModel>;
 
 <div class="">
     <div class="d-flex justify-content-between flex-wrap">
@@ -9,7 +9,6 @@
         <div class="info">
             <p><b>Categorias: </b>@ViewBag.categoriesCount</p>
             <p><b>Productos: </b>@ViewBag.productsCount</p>
-
         </div>
     </div>
     <div>
@@ -21,7 +20,7 @@
     <div class="home-container flex-wrap d-flex gap-3">
         @foreach (var item in Model)
         {
-            @await Html.PartialAsync("~/Views/Shared/Components/Product/_Product.cshtml", item)
+            @await Html.PartialAsync("~/Views/Shared/Components/Business/_Business.cshtml", item)
         }
     </div>
 </div>

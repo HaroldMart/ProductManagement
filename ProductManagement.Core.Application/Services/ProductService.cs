@@ -2,7 +2,6 @@
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Domain.Entities;
 using ProductManagement.Core.Application.ViewModels.Product;
-using ProductManagement.Core.Application.ViewModels.Category;
 
 namespace ProductManagement.Core.Application.Services
 {
@@ -29,7 +28,6 @@ namespace ProductManagement.Core.Application.Services
                     Amount = item.Amount,
                     Description = item.Description,
                     Price = item.Price,
-                    CategoryName = item.Category.Name
                 };
 
                 list.Add(product);
@@ -73,7 +71,48 @@ namespace ProductManagement.Core.Application.Services
                     Amount = data.Amount,
                     Description = data.Description,
                     Price = data.Price,
+                };
+
+                return product;
+            }
+
+            return null;
+        }
+        public async Task<ProductViewModel?> GetViewModelWithInclude(int id, string[] collections, string[] references)
+        {
+            var data = await _repository.GetWithIncludeAsync(id, collections: collections, references: references);
+
+            if (data != null)
+            {
+                ProductViewModel product = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Amount = data.Amount,
+                    Description = data.Description,
+                    Price = data.Price,
                     CategoryName = data.Category.Name
+                };
+
+                return product;
+            }
+
+            return null;
+        }
+        public async Task<SaveProductViewModel?> GetSaveViewModel(int id)
+        {
+            var data = await _repository.GetAsync(id);
+
+            if (data != null)
+            {
+                SaveProductViewModel product = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Amount = data.Amount,
+                    Description = data.Description,
+                    Price = data.Price,
+                    CategoryId = data.CategoryId
                 };
 
                 return product;

@@ -24,11 +24,7 @@ namespace ProductManagement.Controllers
             ViewBag.productsCount = products.Count;
             ViewBag.businessCount = business.Count;
 
-            if (products.Count > 10) {
-
-                return View(products.TakeLast(10).ToList());
-            }
-            return View(products);
+            return View(business);
         }
     }
 }

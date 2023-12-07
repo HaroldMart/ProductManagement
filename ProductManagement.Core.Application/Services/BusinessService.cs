@@ -1,9 +1,7 @@
 ﻿using ProductManagement.Core.Application.Interfaces.Repository;
 using ProductManagement.Core.Application.Interfaces.Service;
-using ProductManagement.Core.Application.Interfaces.Services;
 using ProductManagement.Core.Application.ViewModels.Business;
 using ProductManagement.Core.Domain.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProductManagement.Core.Application.Services
 {
@@ -17,7 +15,7 @@ namespace ProductManagement.Core.Application.Services
 
         public async Task<ICollection<BusinessViewModel>> GetAllViewModel()
         {
-            List<BusinessViewModel> list = [];
+            List<BusinessViewModel> list = new();
 
             var data = await _repository.GetAllAsync();
 
@@ -28,7 +26,6 @@ namespace ProductManagement.Core.Application.Services
                     Id = item.Id,
                     Name = item.Name,
                     Image = item.Image,
-                    CategoriesCount = item.Categories.Count
                 };
 
                 list.Add(business);
@@ -68,7 +65,44 @@ namespace ProductManagement.Core.Application.Services
                     Id = data.Id,
                     Name = data.Name,
                     Image = data.Image,
+                };
+
+                return business;
+            }
+
+            return null;
+        }
+        public async Task<BusinessViewModel?> GetViewModelWithInclude(int id, string[] collections, string[] references)
+        {
+            var data = await _repository.GetWithIncludeAsync(id, collections: collections, references: references);
+
+            if (data != null)
+            {
+                BusinessViewModel business = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Image = data.Image,
                     CategoriesCount = data.Categories.Count
+                };
+
+                return business;
+            }
+
+            return null;
+        }
+        public async Task<SaveBusinessViewModel?> GetSaveViewModel(int id)
+        {
+            var data = await _repository.GetAsync(id);
+
+            if (data != null)
+            {
+                SaveBusinessViewModel business = new()
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Image = data.Image,
+                    IdUser = data.IdUser,
                 };
 
                 return business;

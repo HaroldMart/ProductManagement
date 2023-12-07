@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Delete Product";
+}
+@model ProductManagement.Core.Application.ViewModels.Business.BusinessViewModel;
+
+<div class="delete">
+    <div class="d-flex justify-content-between flex-wrap">
+        <h3 class="display-6">Estas seguro que quieres eliminar este negocio?</h3>
+        <a type="button" asp-route-Id="@Model.Id" asp-action="DeletePost" class="btn btn-info text-white" style="height: 40px;">Eliminar negocio</a>
+        <a type="button" asp-action="Index">Cancelar</a>
+    </div>
+</div>

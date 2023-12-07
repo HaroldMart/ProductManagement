@@ -1,9 +1,10 @@
-﻿@model CategoryViewModel;
+﻿@model ProductManagement.Core.Application.ViewModels.Category.CategoryViewModel;
 
 <div class="card card-category" style="width: 18rem;border-radius:10px;">
+    <img src=@Model.Image class="card-img-top" alt="">
     <div class="card-body">
-        <h5 class="card-title">@Model.Name</h5>
-        <p class="card-text">Productos: @Model.Products.Count()</p>
+        <a asp-controller="Category" asp-action="Details" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
+        <p class="card-text">@Model.ProductsCount</p>
     </div>
 </div>
 

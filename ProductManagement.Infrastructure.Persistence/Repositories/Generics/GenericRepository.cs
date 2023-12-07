@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductManagement.Core.Application.Interfaces.Repositories;
-using ProductManagement.Core.Domain.Entities;
+using ProductManagement.Core.Application.Interfaces.Repositories.Generics;
 using ProductManagement.Infrastructure.Persistence.Contexts;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ProductManagement.Infrastructure.Persistence.Repositories
+namespace ProductManagement.Infrastructure.Persistence.Repositories.Generics
 {
     public class GenericRepository<Entity> : IGenericRepository<Entity> where Entity : class
     {
@@ -38,17 +36,6 @@ namespace ProductManagement.Infrastructure.Persistence.Repositories
             }
 
             return null;
-        }
-
-        public async Task<ICollection<Entity>> GetAllWithIncludeAsync(string[] properties)
-        {
-            var query = entrySet.AsNoTracking().AsQueryable();
-            foreach (var property in properties)
-            {
-                query = query.Include(property);
-            }
-
-            return await query.ToListAsync();
         }
 
         public async Task<Entity> AddAsync(Entity entity)

@@ -1,0 +1,30 @@
+﻿@model ProductManagement.Core.Application.ViewModels.Business.SaveBusinessViewModel;
+
+@{
+    bool isEdit = false;
+
+    if(Model != null)
+    {
+        if (Model.Id != 0) isEdit = true;   
+    }
+}
+
+<div class="">
+    <h3>@(isEdit? "Editando producto" : "Agregando negocio")</h3>
+</div>
+
+<form method="post" asp-controller="Business" asp-action=@(isEdit? "Edit" : "SaveBusiness" ) enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label" for="name">Nombre del negocio</label>
+        <input asp-for="Name" type="text" class="form-control" name="name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <label class="form-label" for="name">Url de Imagen</label>
+        <input asp-for="Image" type="text" class="form-control" name="image">
+
+        <label class="form-label" for="name">Id de usuario</label>
+        <input asp-for="IdUser" type="text" class="form-control" name="idUser">
+
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+</form>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProductManagement.Core.Application.ViewModels.Product
+namespace ProductManagement.Core.Application.ViewModels.Category
 {
     public class SaveCategoryViewModel
     {
