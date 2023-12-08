@@ -7,17 +7,28 @@ namespace ProductManagement.Controllers
     public class BusinessController : Controller
     {
         private readonly IBusinessService _businessService;
-        public BusinessController(IBusinessService businessService)
+        private readonly ICategoryService _categoryService;
+        private readonly string idUser;
+        public BusinessController(IBusinessService businessService, ICategoryService categoryService)
         {
             _businessService = businessService;
+            _categoryService = categoryService;
+            idUser = "1";
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _businessService.GetAllViewModel());
+            return View(await _businessService.GetAllViewModel(idUser));
         }
         public async Task<IActionResult> Details(int id)
         {
-            return View(await _businessService.GetViewModelWithInclude(id, collections: ["Categories"], references: []));
+            var business = await _businessService.GetViewModelWithInclude(idUser, id, collections: ["Categories"], references: []);
+            var categories = await _categoryService.GetAllViewModel(id.ToString());
+            if (categories != null)
+            {
+                business.Categories = categories;
+            }
+            
+            return View(business);
         }
         public IActionResult Save()
         {
@@ -47,7 +58,7 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Edit(int id)
         {
-            var data = await _businessService.GetSaveViewModel(id);
+            var data = await _businessService.GetSaveViewModel(idUser, id);
             SaveBusinessViewModel business = new()
             {
                 Id = data.Id,
@@ -82,7 +93,7 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Delete(int id)
         {
-            return View(await _businessService.GetViewModel(id));
+            return View(await _businessService.GetViewModel(idUser, id));
         }
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)

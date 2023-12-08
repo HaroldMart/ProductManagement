@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
+using ProductManagement.Core.Application.Services;
 using ProductManagement.Core.Application.ViewModels.Category;
 
 namespace ProductManagement.Controllers
@@ -8,22 +9,25 @@ namespace ProductManagement.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IBusinessService _businessService;
+        private readonly string idBusiness;
         public CategoryController(ICategoryService categoryService, IBusinessService businessService)
         {
             _categoryService = categoryService;
             _businessService = businessService;
         }
+        /*
         public async Task<IActionResult> Index()
         {
-            return View(await _categoryService.GetAllViewModel());
+            return PartialView("~Views/Shared/Components/Category/_List.cshtml", await _categoryService.GetAllViewModel(idBusiness));
         }
+        */
         public async Task<IActionResult> Details(int id)
         {
-            return View(await _categoryService.GetViewModelWithInclude(id, collections: ["Products"], references: ["Business"]));
+            return View(await _categoryService.GetViewModelWithInclude(idBusiness, id, collections: ["Products"], references: ["Business"]));
         }
         public async Task<IActionResult> Save()
         {
-            var data = await _businessService.GetAllViewModel();
+            var data = await _businessService.GetAllViewModel(idBusiness);
             ViewBag.Business = data;
             return View();
         }
@@ -52,7 +56,7 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Edit(int id)
         {
-            var data = await _categoryService.GetSaveViewModel(id);
+            var data = await _categoryService.GetSaveViewModel(idBusiness, id);
             SaveCategoryViewModel category = new()
             {
                 Id = data.Id,
@@ -61,7 +65,7 @@ namespace ProductManagement.Controllers
                 BusinessId = data.BusinessId
             };
 
-            var business = await _businessService.GetAllViewModel();
+            var business = await _businessService.GetAllViewModel(idBusiness);
             ViewBag.Business = business;
 
             return View("Save", category);
@@ -91,7 +95,7 @@ namespace ProductManagement.Controllers
         }
         public async Task<ActionResult> Delete(int id)
         {
-            return View(await _categoryService.GetViewModel(id));
+            return View(await _categoryService.GetViewModel(idBusiness, id));
         }
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)

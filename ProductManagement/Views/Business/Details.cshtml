@@ -22,7 +22,11 @@
             <p class="mt-5"><b>Categorias: </b>@Model.CategoriesCount</p>
         </div>
     </div>
+
+   
+   <!-- Html.RenderPartialAsync("~Views/Shared/Components/Product/_List.cshtml"); -->
 </div>
+@await Html.PartialAsync("~/Views/Shared/Components/Category/_List.cshtml", Model.Categories);
 
 <style>
     .product-details {

@@ -22,15 +22,15 @@ namespace ProductManagement.Controllers
                 return View(products.TakeLast(10).ToList());
             }
            */
-            return View(await _productService.GetAllViewModel());
+            return View(await _productService.GetAllViewModel(""));
         }
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(string categoryId, int id)
         {
-            return View(await _productService.GetViewModelWithInclude(id, collections: [], references: ["Category"]));
+            return View(await _productService.GetViewModelWithInclude(categoryId, id, collections: [], references: ["Category"]));
         }
-        public async Task<IActionResult> Save()
+        public async Task<IActionResult> Save(string businessId)
         {
-            var data = await _categoryService.GetAllViewModel();
+            var data = await _categoryService.GetAllViewModel(businessId);
             ViewBag.Categories = data;
             return View();
         }
@@ -56,9 +56,9 @@ namespace ProductManagement.Controllers
            
             return RedirectToAction("Save");
         }
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(string categoryId, string businessId, int id)
         {
-            var data = await _productService.GetSaveViewModel(id);
+            var data = await _productService.GetSaveViewModel(categoryId, id);
             SaveProductViewModel product = new()
             {
                 Id = data.Id,
@@ -69,7 +69,7 @@ namespace ProductManagement.Controllers
                 CategoryId = data.CategoryId,
             };
 
-            var category = await _categoryService.GetAllViewModel();
+            var category = await _categoryService.GetAllViewModel(businessId);
             ViewBag.Categories = category;
 
             return View("Save", product);
@@ -97,9 +97,9 @@ namespace ProductManagement.Controllers
 
             return RedirectToAction("Save");
         }
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(string categoryId, int id)
         {
-            return View(await _productService.GetViewModel(id));
+            return View(await _productService.GetViewModel(categoryId, id));
         }
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)
