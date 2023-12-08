@@ -50,7 +50,7 @@ namespace ProductManagement.Core.Application.Services
                     Id = c.Id,
                     Name = c.Name,
                     Image = c.Image,
-                    ProductsCount = c.Products.Count
+                    ProductsCount = c.Products.Count,
 
                 }).ToList();
 

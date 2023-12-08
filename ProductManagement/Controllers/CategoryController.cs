@@ -9,26 +9,32 @@ namespace ProductManagement.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IBusinessService _businessService;
-        private readonly string idBusiness;
-        public CategoryController(ICategoryService categoryService, IBusinessService businessService)
+        private readonly IProductService _productService;
+        public CategoryController(ICategoryService categoryService, IBusinessService businessService, IProductService productService)
         {
             _categoryService = categoryService;
             _businessService = businessService;
+            _productService = productService;
         }
-        /*
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Details(int businessId, int id)
         {
-            return PartialView("~Views/Shared/Components/Category/_List.cshtml", await _categoryService.GetAllViewModel(idBusiness));
+            var categories = await _categoryService.GetViewModelWithInclude(businessId.ToString(), id, collections: ["Products"], references: ["Business"]);
+            
+            if(categories != null && categories.ProductsCount > 0)
+            {
+                var products = await _productService.GetAllViewModel(id.ToString());
+
+                if (products != null) categories.Products = products;
+            }
+
+            ViewBag.businessId = businessId;
+           
+            return View(categories);
         }
-        */
-        public async Task<IActionResult> Details(int id)
+
+        public IActionResult Save()
         {
-            return View(await _categoryService.GetViewModelWithInclude(idBusiness, id, collections: ["Products"], references: ["Business"]));
-        }
-        public async Task<IActionResult> Save()
-        {
-            var data = await _businessService.GetAllViewModel(idBusiness);
-            ViewBag.Business = data;
             return View();
         }
 
@@ -54,9 +60,9 @@ namespace ProductManagement.Controllers
 
             return RedirectToAction("Save");
         }
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(int businessId, int id)
         {
-            var data = await _categoryService.GetSaveViewModel(idBusiness, id);
+            var data = await _categoryService.GetSaveViewModel(businessId.ToString(), id);
             SaveCategoryViewModel category = new()
             {
                 Id = data.Id,
@@ -65,7 +71,8 @@ namespace ProductManagement.Controllers
                 BusinessId = data.BusinessId
             };
 
-            var business = await _businessService.GetAllViewModel(idBusiness);
+            string userId = "1";
+            var business = await _businessService.GetAllViewModel(userId);
             ViewBag.Business = business;
 
             return View("Save", category);
@@ -82,7 +89,7 @@ namespace ProductManagement.Controllers
 
                     if (response == "Updated")
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Details", new { businessId = category.BusinessId, id = category.Id });
                     }
                 }
                 catch (Exception ex)
@@ -93,21 +100,23 @@ namespace ProductManagement.Controllers
 
             return RedirectToAction("Save");
         }
-        public async Task<ActionResult> Delete(int id)
+
+        public async Task<ActionResult> Delete(int businessId, int id)
         {
-            return View(await _categoryService.GetViewModel(idBusiness, id));
+            ViewBag.businessId = businessId;
+            return View(await _categoryService.GetViewModel(businessId.ToString(), id));
         }
         [HttpPost]
-        public async Task<ActionResult> DeletePost(int id)
+        public async Task<ActionResult> DeletePost(int businessId, int id)
         {
             string response = await _categoryService.Delete(id);
 
             if (response == "Deleted")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Business", businessId);
             }
 
-            return RedirectToAction("Delete");
+            return RedirectToAction("Delete", new { businessId, id });
         }
     }
 }

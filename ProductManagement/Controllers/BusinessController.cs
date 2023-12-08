@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Application.ViewModels.Business;
+using ProductManagement.Core.Domain.Entities;
 
 namespace ProductManagement.Controllers
 {
@@ -8,11 +9,13 @@ namespace ProductManagement.Controllers
     {
         private readonly IBusinessService _businessService;
         private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
         private readonly string idUser;
-        public BusinessController(IBusinessService businessService, ICategoryService categoryService)
+        public BusinessController(IBusinessService businessService, ICategoryService categoryService, IProductService productService)
         {
             _businessService = businessService;
             _categoryService = categoryService;
+            _productService = productService;
             idUser = "1";
         }
         public async Task<IActionResult> Index()
@@ -22,9 +25,20 @@ namespace ProductManagement.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var business = await _businessService.GetViewModelWithInclude(idUser, id, collections: ["Categories"], references: []);
-            var categories = await _categoryService.GetAllViewModel(id.ToString());
+            var categories = await _categoryService.GetAllViewModelWithInclude(id.ToString(), ["Products"]);
+
             if (categories != null)
             {
+                foreach(var category in categories)
+                {
+                    var products = await _productService.GetAllViewModel(category.Id.ToString());
+
+                    if(products != null)
+                    {
+                        category.Products = products;
+                    }
+                }
+                
                 business.Categories = categories;
             }
             
