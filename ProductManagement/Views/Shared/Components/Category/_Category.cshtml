@@ -3,7 +3,7 @@
 <div class="card card-category" style="width: 18rem;border-radius:10px;">
     <img src=@Model.Image class="card-img-top" alt="">
     <div class="card-body">
-        <a asp-controller="Category" asp-action="Details" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
+        <a asp-controller="Category" asp-action="Details" asp-route-businessId="@ViewData["businessId"]" asp-route-Id="@Model.Id"><h5 class="card-title">@Model.Name</h5></a>
         <p class="card-text">@Model.ProductsCount</p>
     </div>
 </div>
@@ -11,11 +11,6 @@
 <style>
         .card-category {
             transition: all 300ms;
-            border: 0;
-        }
-
-        .card-category .card-body{
-            padding: 0;
         }
 
         .card-category:hover {

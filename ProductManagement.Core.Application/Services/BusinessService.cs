@@ -13,139 +13,170 @@ namespace ProductManagement.Core.Application.Services
             _repository = repository;
         }
 
-        public async Task<ICollection<BusinessViewModel>> GetAllViewModel()
-        {
-            List<BusinessViewModel> list = new();
-
-            var data = await _repository.GetAllAsync();
-
-            foreach (var item in data)
-            {
-                BusinessViewModel business = new()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Image = item.Image,
-                };
-
-                list.Add(business);
-            }
-
-            return list;
-        }
-        public async Task<ICollection<BusinessViewModel>> GetAllViewModelWithInclude(string[] properties)
+        public async Task<ICollection<BusinessViewModel>> GetAllViewModel(string userId)
         {
             List<BusinessViewModel> list = [];
 
-            var data = await _repository.GetAllWithIncludeAsync(properties);
-
-            foreach (var item in data)
+            try
             {
-                BusinessViewModel business = new()
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Image = item.Image,
-                    CategoriesCount = item.Categories.Count
-                };
+                var data = await _repository.GetAllAsync();
 
-                list.Add(business);
+                var det = data;
+
+                list = data.Where(p => p.IdUser == userId).Select(b => new BusinessViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Image = b.Image,
+
+                }).ToList();
+               
+            } catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        
+            return list;
+        }
+        public async Task<ICollection<BusinessViewModel>> GetAllViewModelWithInclude(string userId, string[] properties)
+        {
+            List<BusinessViewModel> list = [];
+
+            try
+            {
+                var data = await _repository.GetAllWithIncludeAsync(properties);
+
+                list = data.Where(p => p.IdUser == userId).Select(b => new BusinessViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Image = b.Image,
+                    CategoriesCount = b.Categories.Count
+
+                }).ToList();
+
+             } catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
             return list;
         }
-        public async Task<BusinessViewModel?> GetViewModel(int id)
+        public async Task<BusinessViewModel?> GetViewModel(string userId, int id)
         {
             var data = await _repository.GetAsync(id);
 
             if (data != null)
             {
-                BusinessViewModel business = new()
+                if(data.IdUser == userId)
                 {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Image = data.Image,
-                };
+                    BusinessViewModel business = new()
+                    {
+                        Id = data.Id,
+                        Name = data.Name,
+                        Image = data.Image,
+                    };
 
-                return business;
+                    return business;
+                }
+
+                return null;
             }
 
             return null;
         }
-        public async Task<BusinessViewModel?> GetViewModelWithInclude(int id, string[] collections, string[] references)
+        public async Task<BusinessViewModel?> GetViewModelWithInclude(string userId, int id, string[] collections, string[] references)
         {
             var data = await _repository.GetWithIncludeAsync(id, collections: collections, references: references);
 
             if (data != null)
             {
-                BusinessViewModel business = new()
+                if (data.IdUser == userId)
                 {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Image = data.Image,
-                    CategoriesCount = data.Categories.Count
-                };
+                    BusinessViewModel business = new()
+                    {
+                        Id = data.Id,
+                        Name = data.Name,
+                        Image = data.Image,
+                        CategoriesCount = data.Categories.Count
+                    };
 
-                return business;
+                    return business;
+                }
+
+                return null;
             }
 
             return null;
         }
-        public async Task<SaveBusinessViewModel?> GetSaveViewModel(int id)
+        public async Task<SaveBusinessViewModel?> GetSaveViewModel(string userId, int id)
         {
             var data = await _repository.GetAsync(id);
 
             if (data != null)
             {
-                SaveBusinessViewModel business = new()
+                if (data.IdUser == userId)
                 {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Image = data.Image,
-                    IdUser = data.IdUser,
-                };
+                    SaveBusinessViewModel business = new()
+                    {
+                        Id = data.Id,
+                        Name = data.Name,
+                        Image = data.Image,
+                        IdUser = data.IdUser,
+                    };
 
-                return business;
+                    return business;
+                }
+
+                return null;
             }
 
             return null;
         }
         public async Task<string> Add(SaveBusinessViewModel saveViewModel)
         {
-            Business business = new()
+            if(saveViewModel.IdUser != null)
             {
-                Id = saveViewModel.Id,
-                Name = saveViewModel.Name,
-                Image = saveViewModel.Image,
-                IdUser = saveViewModel.IdUser
-            };
+                Business business = new()
+                {
+                    Id = saveViewModel.Id,
+                    Name = saveViewModel.Name,
+                    Image = saveViewModel.Image,
+                    IdUser = saveViewModel.IdUser
+                };
 
-            var data = await _repository.AddAsync(business);
+                var data = await _repository.AddAsync(business);
 
-            if (data != null)
-            {
-                return "Inserted";
+                if (data != null)
+                {
+                    return "Inserted";
+                }
+
+                return "Failed";
             }
 
             return "Failed";
         }
         public async Task<string> Update(SaveBusinessViewModel saveViewModel)
         {
-            
-            Business business = new()
+            if(saveViewModel.IdUser != null)
             {
-                Id = saveViewModel.Id,
-                Name = saveViewModel.Name,
-                Image = saveViewModel.Image,
-                IdUser = saveViewModel.IdUser,
-            };
+                Business business = new()
+                {
+                    Id = saveViewModel.Id,
+                    Name = saveViewModel.Name,
+                    Image = saveViewModel.Image,
+                    IdUser = saveViewModel.IdUser,
+                };
 
-            bool response = await _repository.UpdateAsync(business);
-            if (response)
-            {
-                return "Updated";
+                bool response = await _repository.UpdateAsync(business);
+                if (response)
+                {
+                    return "Updated";
+                }
+                return "Failed";
             }
-
+           
             return "Failed";
         }
         public async Task<string> Delete(int id)
