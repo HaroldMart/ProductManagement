@@ -32,9 +32,12 @@ namespace ProductManagement.Controllers
            
             return View(categories);
         }
-
-        public IActionResult Save()
+        public async Task<IActionResult> Save()
         {
+            string userId = "1";
+            var business = await _businessService.GetAllViewModel(userId);
+            ViewBag.Business = business;
+
             return View();
         }
 

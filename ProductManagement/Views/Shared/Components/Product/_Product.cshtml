@@ -7,6 +7,10 @@
             <p class="card-text">$@Model.Price pesos</p>
             <b class="card-text">@Model.Amount Unidades</b>
             <b class="card-text">@Model.CategoryName</b>
+        <div class="buttons">
+            <a asp-route-id="@Model.Id" type="button" asp-action="Edit" class="btn btn-success text-white" style="height: 40px;">Editar</a>
+            <a asp-route-id="@Model.Id" type="button" asp-action="Delete" class="btn btn-danger text-white" style="height: 40px;">Eliminar</a>
+        </div>
         </div>
 </div>
 

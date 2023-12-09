@@ -10,7 +10,7 @@
 }
 
 <div class="">
-    <h3>@(isEdit? "Editando producto" : "Agregando categoria")</h3>
+    <h3>@(isEdit ? "Editando categoria" : "Agregando categoria")</h3>
 </div>
 
 <form method="post" asp-controller="Category" asp-action=@(isEdit? "Edit" : "SaveCategory" ) enctype="multipart/form-data">
