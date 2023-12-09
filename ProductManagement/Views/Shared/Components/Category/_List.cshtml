@@ -3,17 +3,17 @@
 }
 @model List<ProductManagement.Core.Application.ViewModels.Category.CategoryViewModel>;
 
-<div class="products">
+<div class="categories">
     <div class="d-flex justify-content-between flex-wrap">
-        <h3 class="display-6">Categorias</h3>
-        <a type="button" asp-route-Id="" asp-action="Save" class="btn btn-info text-white" style="height: 40px;">Agregar una categoria</a>
+        <h3 class="">Categorias</h3>
+        <a type="button" asp-controller="Category" asp-route-Id="" asp-action="Save" class="btn btn-info text-white" style="height: 40px;">Agregar una categoria</a>
     </div>
    
 
     <div class="products-container d-flex flex-wrap gap-3">
         @foreach (var item in Model)
         {
-            @await Html.PartialAsync("~/Views/Shared/Components/Category/_Category.cshtml", item)
+            @await Html.PartialAsync("~/Views/Shared/Components/Category/_Category.cshtml", item);
         }
     </div>
 </div>

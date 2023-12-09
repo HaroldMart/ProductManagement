@@ -10,7 +10,7 @@
 }
 
 <div class="">
-    <h3>@(isEdit? "Editando producto" : "Agregando negocio")</h3>
+    <h3>@(isEdit ? "Editando negocio" : "Agregando negocio")</h3>
 </div>
 
 <form method="post" asp-controller="Business" asp-action=@(isEdit? "Edit" : "SaveBusiness" ) enctype="multipart/form-data">
