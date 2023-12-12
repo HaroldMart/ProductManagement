@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Detalles de Negocio";
+    bool count = false;
 }
 @model ProductManagement.Core.Application.ViewModels.Business.BusinessViewModel;
 
@@ -25,25 +26,41 @@
 </div>
 
 @{
-    if(Model.Categories != null && Model.Categories.Count > 0)
-    {
-        @await Html.PartialAsync(
-            "~/Views/Shared/Components/Category/_List.cshtml", 
-            Model.Categories, 
-            new ViewDataDictionary(ViewData) 
-            {
-                {"businessId", Model.Id}
-            }
-         )
+    if (Model.Categories != null && Model.Categories.Count > 0) { count = true; }
 
-        foreach (var category in Model.Categories)
-        {
-            if (category.Products != null)
+    <div class="">
+        <h3 class="">Categorias</h3>
+        <a type="button" asp-controller="Category" asp-route-Id="" asp-action="Save" class="btn btn-info text-white" style="height: 40px;">Agregar una categoria</a>
+    
+        @{
+            if(count)
             {
-                @await Html.PartialAsync("~/Views/Shared/Components/Product/_List.cshtml", category.Products);
+                @await Html.PartialAsync("~/Views/Shared/Components/Category/_List.cshtml",
+                 Model.Categories, new ViewDataDictionary(ViewData)
+                 { { "businessId", Model.Id } })
+            }
+            else 
+            {
+                <p>No tienes categorias, agrega una!!</p>
             }
         }
-    }
+    </div>
+
+    <div class="">
+        <h3 class="">Productos</h3>
+        <a type="button" asp-controller="Product" asp-route-Id="" asp-route-businessId="@ViewData["businessId"]" asp-action="Save" class="btn btn-info text-white" style="height: 40px;">Agregar un producto</a>
+        @{
+            if (count)
+            {
+                @await Html.PartialAsync("~/Views/Shared/Components/Product/_List.cshtml", ViewBag.Products, new ViewDataDictionary(ViewData)
+                { { "businessId", Model.Id } })
+            }
+            else
+            {
+                <p>No tienes productos, agrega uno!!</p>
+            }
+        }
+     </div>
 }
 
 <style>

@@ -6,7 +6,13 @@
 <div class="delete">
     <div class="d-flex justify-content-between flex-wrap">
         <h3 class="display-6">Estas seguro que quieres eliminar este producto?</h3>
-        <a type="button" asp-route-Id="@Model.Id" asp-action="DeletePost" class="btn btn-info text-white" style="height: 40px;">Eliminar producto</a>
-        <a type="button" asp-action="Index">Cancelar</a>
+        <form method="post" asp-controller="Product" asp-action="DeletePost">
+            <input hidden asp-for="Id" />
+            <input hidden name="businessId" value="@ViewBag.businessId" />
+            <input hidden name="categoryId" value="@Model.CategoryId" />
+
+            <button type="submit" class="btn btn-info text-white" style="height: 40px;">Eliminar producto</button>
+            <a type="button" class="btn btn-danger text-white" asp-action="Index">Cancelar</a>
+        </form>
     </div>
 </div>

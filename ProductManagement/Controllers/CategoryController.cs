@@ -2,6 +2,7 @@
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Application.Services;
 using ProductManagement.Core.Application.ViewModels.Category;
+using ProductManagement.Core.Domain.Entities;
 
 namespace ProductManagement.Controllers
 {
@@ -33,8 +34,12 @@ namespace ProductManagement.Controllers
             return View(categories);
         }
 
-        public IActionResult Save()
+        public async Task<IActionResult> Save()
         {
+            string userId = "1";
+            var business = await _businessService.GetAllViewModel(userId);
+            ViewBag.Business = business;
+
             return View();
         }
 
@@ -49,7 +54,7 @@ namespace ProductManagement.Controllers
 
                     if (response == "Inserted")
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Details", "Business", new { id = category.BusinessId });
                     }
                 }
                 catch (Exception ex)
@@ -60,6 +65,7 @@ namespace ProductManagement.Controllers
 
             return RedirectToAction("Save");
         }
+
         public async Task<ActionResult> Edit(int businessId, int id)
         {
             var data = await _categoryService.GetSaveViewModel(businessId.ToString(), id);
@@ -106,6 +112,7 @@ namespace ProductManagement.Controllers
             ViewBag.businessId = businessId;
             return View(await _categoryService.GetViewModel(businessId.ToString(), id));
         }
+
         [HttpPost]
         public async Task<ActionResult> DeletePost(int businessId, int id)
         {
@@ -113,7 +120,7 @@ namespace ProductManagement.Controllers
 
             if (response == "Deleted")
             {
-                return RedirectToAction("Index", "Business", businessId);
+                return RedirectToAction("Details", "Business", new { id = businessId });
             }
 
             return RedirectToAction("Delete", new { businessId, id });

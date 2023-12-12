@@ -6,11 +6,11 @@
 <div class="delete">
     <div class="d-flex justify-content-between flex-wrap">
         <h3 class="display-6">Estas seguro que quieres eliminar esta categoria?</h3>
-        <form method="post">
+        <form method="post" asp-controller="Category" asp-action="DeletePost">
             <input hidden asp-for="Id" />
-            <input hidden value="@ViewBag.businessId" />
-            <button type="submit" asp-controller="Category" asp-action="DeletePost" class="btn btn-info text-white" style="height: 40px;">Eliminar categoria</button>
-            <a type="button" asp-controller="Category" class="btn btn-danger text-white" asp-route-businessId="@ViewBag.businessId" asp-route-id="@Model.Id" asp-action="Details">Cancelar</a>
+            <input hidden name="businessId" value="@ViewBag.businessId" />
+            <button type="submit" class="btn btn-info text-white" style="height: 40px;">Eliminar categoria</button>
+            <a type="submit" asp-controller="Category" class="btn btn-danger text-white" asp-route-businessId="@ViewBag.businessId" asp-route-id="@Model.Id" asp-action="Details">Cancelar</a>
         </form>
     </div>
 </div>

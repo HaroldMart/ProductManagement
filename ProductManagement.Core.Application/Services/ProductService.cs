@@ -52,7 +52,8 @@ namespace ProductManagement.Core.Application.Services
                     Amount = p.Amount,
                     Description = p.Description,
                     Price = p.Price,
-                    CategoryName = p.Category.Name
+                    CategoryName = p.Category.Name,
+                    CategoryId = p.Category.Id.ToString()
 
                 }).ToList();
 
@@ -103,7 +104,8 @@ namespace ProductManagement.Core.Application.Services
                         Amount = data.Amount,
                         Description = data.Description,
                         Price = data.Price,
-                        CategoryName = data.Category.Name
+                        CategoryName = data.Category.Name,
+                        CategoryId = data.Category.Id.ToString()
                     };
 
                     return product;

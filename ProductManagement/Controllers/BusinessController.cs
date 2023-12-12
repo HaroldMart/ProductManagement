@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Application.ViewModels.Business;
-using ProductManagement.Core.Domain.Entities;
+using ProductManagement.Core.Application.ViewModels.Product;
 
 namespace ProductManagement.Controllers
 {
@@ -18,36 +18,45 @@ namespace ProductManagement.Controllers
             _productService = productService;
             idUser = "1";
         }
+
         public async Task<IActionResult> Index()
         {
             return View(await _businessService.GetAllViewModel(idUser));
         }
+
         public async Task<IActionResult> Details(int id)
         {
             var business = await _businessService.GetViewModelWithInclude(idUser, id, collections: ["Categories"], references: []);
             var categories = await _categoryService.GetAllViewModelWithInclude(id.ToString(), ["Products"]);
+            List<ProductViewModel> productList = [];
 
-            if (categories != null)
+            if (categories != null && categories.Count > 0)
             {
                 foreach(var category in categories)
                 {
-                    var products = await _productService.GetAllViewModel(category.Id.ToString());
+                    var products = await _productService.GetAllViewModelWithInclude(category.Id.ToString(), ["Category"]);
 
                     if(products != null)
                     {
-                        category.Products = products;
+                        foreach(ProductViewModel product in products)
+                        {
+                            productList.Add(product);
+                        }
                     }
                 }
                 
                 business.Categories = categories;
+                ViewBag.Products = productList;
             }
             
             return View(business);
         }
+
         public IActionResult Save()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveBusiness(SaveBusinessViewModel business)
         {
@@ -70,6 +79,7 @@ namespace ProductManagement.Controllers
 
             return RedirectToAction("Save");
         }
+
         public async Task<ActionResult> Edit(int id)
         {
             var data = await _businessService.GetSaveViewModel(idUser, id);
@@ -83,6 +93,7 @@ namespace ProductManagement.Controllers
 
             return View("Save", business);
         }
+
         [HttpPost]
         public async Task<ActionResult> Edit(SaveBusinessViewModel business)
         {
@@ -109,6 +120,7 @@ namespace ProductManagement.Controllers
         {
             return View(await _businessService.GetViewModel(idUser, id));
         }
+
         [HttpPost]
         public async Task<ActionResult> DeletePost(int id)
         {
