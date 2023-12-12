@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Application.Interfaces.Service;
 using ProductManagement.Core.Application.ViewModels.Product;
-using ProductManagement.Core.Domain.Entities;
 
 namespace ProductManagement.Controllers
 {
@@ -14,29 +13,22 @@ namespace ProductManagement.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
-        public async Task<IActionResult> Index()
-        {
-           /* if (products.Count > 10)
-            {
 
-                return View(products.TakeLast(10).ToList());
-            }
-           */
-            return View(await _productService.GetAllViewModel(""));
-        }
-        public async Task<IActionResult> Details(string categoryId, int id)
-        {
-            return View(await _productService.GetViewModelWithInclude(categoryId, id, collections: [], references: ["Category"]));
-        }
         public async Task<IActionResult> Save(string businessId)
         {
-            var data = await _categoryService.GetAllViewModel(businessId);
-            ViewBag.Categories = data;
+            if(businessId != null)
+            {
+                var data = await _categoryService.GetAllViewModel(businessId);
+                ViewBag.Categories = data;
+            }
+
+            ViewBag.businessId = businessId;
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveProduct(SaveProductViewModel product)
+        public async Task<IActionResult> SaveProduct(int businessId, SaveProductViewModel product)
         {
             if(ModelState.IsValid) {
                 try
@@ -45,7 +37,7 @@ namespace ProductManagement.Controllers
 
                     if (response == "Inserted")
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Details", "Business", new { id = businessId });
                     }
                 }
                 catch (Exception ex)
@@ -54,8 +46,9 @@ namespace ProductManagement.Controllers
                 }
             }
            
-            return RedirectToAction("Save");
+            return RedirectToAction("Save", new { businessId });
         }
+
         public async Task<ActionResult> Edit(string categoryId, string businessId, int id)
         {
             var data = await _productService.GetSaveViewModel(categoryId, id);
@@ -71,12 +64,13 @@ namespace ProductManagement.Controllers
 
             var category = await _categoryService.GetAllViewModel(businessId);
             ViewBag.Categories = category;
+            ViewBag.businessId = businessId;
 
             return View("Save", product);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(SaveProductViewModel product)
+        public async Task<ActionResult> Edit(int businessId, SaveProductViewModel product)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +80,7 @@ namespace ProductManagement.Controllers
 
                     if (response == "Updated")
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Details", "Business", new { id = businessId });
                     }
                 }
                 catch (Exception ex)
@@ -95,23 +89,27 @@ namespace ProductManagement.Controllers
                 }
             }
 
-            return RedirectToAction("Save");
+            return RedirectToAction("Save", new { businessId });
         }
-        public async Task<ActionResult> Delete(string categoryId, int id)
+
+        public async Task<ActionResult> Delete(int businessId, string categoryId, int id)
         {
-            return View(await _productService.GetViewModel(categoryId, id));
+            ViewBag.businessId = businessId;
+
+            return View(await _productService.GetViewModelWithInclude(categoryId, id, collections: [], references: ["Category"]));
         }
+
         [HttpPost]
-        public async Task<ActionResult> DeletePost(int id)
+        public async Task<ActionResult> DeletePost(int businessId, string categoryId, int id)
         {
             string response = await _productService.Delete(id);
 
             if(response == "Deleted")
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Business", new { id = businessId });
             }
 
-            return RedirectToAction("Delete");
+            return RedirectToAction("Delete", new { businessId, categoryId, id });
         }
     }
 }

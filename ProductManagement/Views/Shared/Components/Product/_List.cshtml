@@ -1,19 +1,15 @@
 ﻿@{
+    var mivida = ViewData["categoryId"];
     ViewData["Title"] = "Productos";
 }
 @model List<ProductManagement.Core.Application.ViewModels.Product.ProductViewModel>;
 
 <div class="products">
-    <div class="d-flex justify-content-between flex-wrap">
-        <h3 class="">Productos</h3>
-        <a type="button" asp-controller="Product" asp-route-Id="" asp-action="Save" class="btn btn-info text-white" style="height: 40px;">Agregar un producto</a>
-    </div>
-
     <div class="products-container d-flex flex-wrap gap-3">
         @foreach (var item in Model)
         {
             @await Html.PartialAsync("~/Views/Shared/Components/Product/_Product.cshtml", item)
-        } 
+        }
     </div>
 </div>
 

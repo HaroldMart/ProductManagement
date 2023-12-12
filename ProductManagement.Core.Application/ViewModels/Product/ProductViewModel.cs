@@ -8,5 +8,6 @@
         public double Price { get; set; }
         public int Amount { get; set; }
         public string CategoryName { get; set; }
+        public string CategoryId { get; set; }
     }
 }
